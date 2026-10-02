@@ -174,3 +174,20 @@ def test_demo_command_end_to_end(capsys, tmp_path):
     assert code == 0
     assert "FLAKY" in out and "Minimal polluter" in out
     assert (keep / "tests" / "test_settings.py").exists()
+
+
+@pytest.mark.parametrize(
+    "argv,expected",
+    [
+        (["pytest", "-q"], True),
+        (["C:\\Python\\Scripts\\pytest.EXE", "-q"], True),
+        (["/usr/bin/python3", "-m", "pytest"], True),
+        (["py.test"], True),
+        (["npx", "jest"], False),
+        (["python", "-m", "unittest"], False),
+    ],
+)
+def test_is_pytest(argv, expected):
+    from flakehunt.runner import is_pytest
+
+    assert is_pytest(argv) is expected

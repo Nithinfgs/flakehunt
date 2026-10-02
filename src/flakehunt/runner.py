@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -28,7 +29,7 @@ class RunRecord:
 
 
 def is_pytest(argv: list[str]) -> bool:
-    names = [Path(a).name for a in argv[:4]]
+    names = [re.split(r"[\\/]", a)[-1].lower().removesuffix(".exe") for a in argv[:4]]
     if "pytest" in names or "py.test" in names:
         return True
     return "-m" in argv and "pytest" in argv[argv.index("-m") + 1 : argv.index("-m") + 2]
